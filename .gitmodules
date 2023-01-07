@@ -1,0 +1,15 @@
+[submodule "prc-tools"]
+	path = prc-tools
+	url = https://github.com/retroprom/prc-tools.git
+[submodule "pilrc"]
+	path = pilrc
+	url = https://github.com/retroprom/pilrc.git
+[submodule "pilot-link"]
+	path = pilot-link
+	url = https://github.com/retroprom/pilot-link.git
+[submodule "palm-sdks"]
+	path = palm-sdks
+	url = https://github.com/retroprom/palm-os-sdk.git
+[submodule "multilink"]
+	path = multilink
+	url = https://github.com/retroprom/multilink.git
