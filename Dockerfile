@@ -54,9 +54,9 @@ RUN cd /build/prc-tools \
  && make install MAKEINFO=true
 
 COPY multilink /build/multilink
-#RUN cd /build/multilink \
-# && make \
-# && make install
+RUN cd /build/multilink \
+ && make \
+ && make install
 
 #FROM common
 
