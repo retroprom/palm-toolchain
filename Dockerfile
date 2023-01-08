@@ -20,8 +20,10 @@ RUN apt update \
 
 WORKDIR /build
 
+# Install Palm SDKs
 COPY palm-sdks /opt/palmdev
 
+# Build and install pilot-link
 COPY pilot-link /build/pilot-link
 RUN cd /build/pilot-link \
  && autoreconf -fvi \
@@ -29,6 +31,7 @@ RUN cd /build/pilot-link \
  && make -j4 \
  && make install
 
+# Build and install the resource compiler
 COPY pilrc /build/pilrc
 RUN cd /build/pilrc/unix \
  && autoreconf -fvi \
@@ -36,6 +39,7 @@ RUN cd /build/pilrc/unix \
  && make -j4 \
  && make install
 
+# Build and install prc-tools (the toolchain)
 COPY prc-tools /build/prc-tools
 RUN cd /build/prc-tools \
  && mkdir -p build \
@@ -53,6 +57,7 @@ RUN cd /build/prc-tools \
  && CFLAGS="-w -O2 -fcommon" make \
  && make install MAKEINFO=true
 
+# Build and install multilink
 COPY multilink /build/multilink
 RUN cd /build/multilink \
  && make \
