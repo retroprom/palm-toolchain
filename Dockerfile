@@ -57,6 +57,13 @@ RUN cd /build/prc-tools \
  && CFLAGS="-w -O2 -fcommon" make \
  && make install MAKEINFO=true
 
+# Set up pkg-config for mixed-architecture search
+ENV PKG_CONFIG_PATH=/usr/local/m68k-palmos/lib/pkgconfig:/usr/local/lib/pkg-config
+
+# Install pkg-config for the SDKs
+RUN cd /opt/palmdev \
+ && ./install.sh /usr/local
+
 # Build and install multilink
 COPY multilink /build/multilink
 RUN cd /build/multilink \
