@@ -3,21 +3,16 @@ ARG BASE="debian:stable"
 
 FROM ${BASE} as common
 
-ENV PALM_PKG_COMMON="dumb-init libpopt0 libtinfo6 libncurses6 libncursesw6 libusb-0.1-4"
-ENV PALM_PKG_BUILD="build-essential autoconf autoconf-archive automake bison flex libncurses-dev libpopt-dev libtool libusb-dev pkg-config rman texinfo"
+ENV PALM_DEPENDS="dumb-init build-essential autoconf autoconf-archive automake bison flex libncurses-dev libpopt-dev libtool libusb-dev pkg-config rman texinfo"
 
 USER root
 
+# Install dependencies
 RUN apt update \
- && DEBIAN_FRONTEND=noninteractive apt install --yes --no-install-recommends ${PALM_PKG_COMMON} \
+ && DEBIAN_FRONTEND=noninteractive apt install --yes --no-install-recommends ${PALM_DEPENDS} \
  && apt clean && rm -rf /var/lib/apt/lists/*
 
-FROM common AS build
-
-RUN apt update \
- && DEBIAN_FRONTEND=noninteractive apt install --yes --no-install-recommends ${PALM_PKG_BUILD} \
- && apt clean && rm -rf /var/lib/apt/lists/*
-
+# Work in build directory
 WORKDIR /build
 
 # Install Palm SDKs
@@ -52,15 +47,15 @@ RUN cd /build/prc-tools \
       --enable-targets=m68k-palmos \
       --enable-languages=c,c++ \
       --enable-install-libbfd \
-	  --enable-generic \
+      --enable-generic \
       --with-palmdev-prefix=/opt/palmdev \
- && CFLAGS="-w -O2 -fcommon" make \
+ && make \
  && make install MAKEINFO=true
 
 # Set up pkg-config for mixed-architecture search
 ENV PKG_CONFIG_PATH=/usr/local/m68k-palmos/lib/pkgconfig:/usr/local/lib/pkg-config
 
-# Install pkg-config for the SDKs
+# Install pkg-config for Palm SDKs
 RUN cd /opt/palmdev \
  && ./install.sh /usr/local
 
@@ -69,8 +64,3 @@ COPY multilink /build/multilink
 RUN cd /build/multilink \
  && make \
  && make install
-
-#FROM common
-
-#COPY --from=build /usr/local /usr/local
-
