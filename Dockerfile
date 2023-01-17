@@ -18,22 +18,6 @@ WORKDIR /build
 # Install Palm SDKs
 COPY palm-sdks /opt/palmdev
 
-# Build and install pilot-link
-COPY pilot-link /build/pilot-link
-RUN cd /build/pilot-link \
- && autoreconf -fvi \
- && ./configure --prefix=/usr/local --enable-conduits --enable-libusb --with-bluez=no \
- && make -j4 \
- && make install
-
-# Build and install the resource compiler
-COPY pilrc /build/pilrc
-RUN cd /build/pilrc/unix \
- && autoreconf -fvi \
- && ./configure --prefix=/usr/local \
- && make -j4 \
- && make install
-
 # Build and install prc-tools (the toolchain)
 COPY prc-tools /build/prc-tools
 RUN cd /build/prc-tools \
@@ -51,6 +35,22 @@ RUN cd /build/prc-tools \
       --with-palmdev-prefix=/opt/palmdev \
  && make \
  && make install MAKEINFO=true
+
+# Build and install pilrc
+COPY pilrc /build/pilrc
+RUN cd /build/pilrc/unix \
+ && autoreconf -fvi \
+ && ./configure --prefix=/usr/local \
+ && make -j4 \
+ && make install
+
+# Build and install pilot-link
+COPY pilot-link /build/pilot-link
+RUN cd /build/pilot-link \
+ && autoreconf -fvi \
+ && ./configure --prefix=/usr/local --enable-conduits --enable-libusb --with-bluez=no \
+ && make -j4 \
+ && make install
 
 # Set up pkg-config for mixed-architecture search
 ENV PKG_CONFIG_PATH=/usr/local/m68k-palmos/lib/pkgconfig:/usr/local/lib/pkg-config
